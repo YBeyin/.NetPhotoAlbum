@@ -1,0 +1,12 @@
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\bin\Release\NetPhotoAlbum.dll
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\bin\Release\NetPhotoAlbum.pdb
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.CatalogObject.resources
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.Images.Resources.resources
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.ListObject.resources
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.NetPhotoAlbum.resources
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.TrackBarCollection.MACTrackBar.resources
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.csproj.GenerateResource.cache
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.csproj.CoreCompileInputs.cache
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.dll
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.pdb
+D:\Software_Works\New_Project\NetPhotoAlbum\NetPhotoAlbum\obj\Release\NetPhotoAlbum.csprojAssemblyReference.cache
