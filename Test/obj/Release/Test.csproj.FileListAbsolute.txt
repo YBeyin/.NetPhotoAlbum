@@ -1,0 +1,13 @@
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\bin\Release\Test.exe.config
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\bin\Release\Test.exe
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\bin\Release\Test.pdb
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\bin\Release\NetPhotoAlbum.dll
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\bin\Release\NetPhotoAlbum.pdb
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Release\Test.csprojAssemblyReference.cache
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Release\Test.TestForm.resources
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Release\Test.Properties.Resources.resources
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Release\Test.csproj.GenerateResource.cache
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Release\Test.csproj.CoreCompileInputs.cache
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Release\Test.csproj.CopyComplete
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Release\Test.exe
+D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Release\Test.pdb
