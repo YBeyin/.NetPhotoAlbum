@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Windows.Forms;
 
 namespace NetPhotoAlbum
@@ -87,6 +89,50 @@ namespace NetPhotoAlbum
             this.IsSelected = false;
         }
 
+        private void PopulateData()
+        {
+            Pbox.SuspendLayout();
+            Image _Img;
+            Size ThumbSize;
+            if (_DataSource.Path != null)
+            {
+                if (File.Exists(_DataSource.Path))
+                {
+                    using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(_DataSource.Path)))
+                    {
+                        _Img = Image.FromStream(ms, true, false);
+                        ThumbSize = CalculateThumbImageSize(_Img.Size, this.Pbox.Size);
+                        _Img = _Img.GetThumbnailImage(ThumbSize.Width, ThumbSize.Height, null, new IntPtr());
+                    }
+                }
+                else
+                {
+                    ThumbSize = CalculateThumbImageSize(Images.Resources.brokenImage.Size, this.Pbox.Size);
+                    _Img = Images.Resources.brokenImage.GetThumbnailImage(ThumbSize.Width, ThumbSize.Height, null, new IntPtr());
+                }
+            }
+            else if (_DataSource.Image != null)
+            {             
+
+                ThumbSize = CalculateThumbImageSize(_DataSource.Image.Size, this.Pbox.Size);
+                _Img = _DataSource.Image.GetThumbnailImage(ThumbSize.Width, ThumbSize.Height, null, new IntPtr());
+            }
+            else
+            {
+                ThumbSize = CalculateThumbImageSize(Images.Resources.brokenImage.Size, this.Pbox.Size);
+                _Img = Images.Resources.brokenImage.GetThumbnailImage(ThumbSize.Width, ThumbSize.Height, null, new IntPtr());
+            }
+            this.Pbox.Image = _Img;
+            Pbox.ResumeLayout();
+        }
+        private Size CalculateThumbImageSize(Size CurrentImageSize, Size ObjectSize)
+        {
+            Size NewSize = new Size();
+            NewSize.Width = ObjectSize.Width - 3;
+            NewSize.Height = (int)Math.Round(((float)CurrentImageSize.Height * (float)NewSize.Width) / (float)CurrentImageSize.Width);
+            return NewSize;
+        }
+
         /// <summary>
         /// Picture box size mood.
         /// </summary>
@@ -154,20 +200,22 @@ namespace NetPhotoAlbum
             }
         }
 
-        public ListObjectDataSource DataSource
+        public ObjectDataSource DataSource
         {
             get { return _DataSource; }
             set
             {
                 _DataSource = value;
-                this.Pbox.Image = _DataSource.Picture;
+                PopulateData();
                 Refresh();
             }
         }
 
-        private ListObjectDataSource _DataSource;
 
-        private PictureBox Pbox;
+
+        private ObjectDataSource _DataSource;
+
+        internal PictureBox Pbox;
         private BorderStyle _BorderStyle;
         private Color _PboxBackColor;
         private Color _PboxBackHoverColor;

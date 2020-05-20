@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace NetPhotoAlbum
 {
-    public interface IListObject
+    public interface IObject
     {
         int Id { get; set; }
-        Image Picture { get; set; }
+        Image Image { get; set; }
+        string Path { get; set; }
         string Information { get; set; }
     }
 }

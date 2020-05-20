@@ -11,3 +11,16 @@ D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Debug\Test.csproj.CoreCompi
 D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Debug\Test.csproj.CopyComplete
 D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Debug\Test.exe
 D:\Software_Works\New_Project\NetPhotoAlbum\Test\obj\Debug\Test.pdb
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\bin\Debug\Test.exe.config
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\bin\Debug\Test.exe
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\bin\Debug\Test.pdb
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\bin\Debug\NetPhotoAlbum.dll
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\bin\Debug\NetPhotoAlbum.pdb
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\obj\Debug\Test.csprojAssemblyReference.cache
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\obj\Debug\Test.TestForm.resources
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\obj\Debug\Test.Properties.Resources.resources
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\obj\Debug\Test.csproj.GenerateResource.cache
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\obj\Debug\Test.csproj.CoreCompileInputs.cache
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\obj\Debug\Test.csproj.CopyComplete
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\obj\Debug\Test.exe
+D:\Software_Works\New_Project\NetPhotoAlbum\Project\Test\obj\Debug\Test.pdb

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows.Forms;
 using NetPhotoAlbum.TrackBarCollection;
 
@@ -86,7 +85,7 @@ namespace NetPhotoAlbum
     /// A Winforms Photo Album control
     /// </summary>   
     [Serializable]
-    [ToolboxBitmap(typeof(NetPhotoAlbum),"NetPhotoAlbum.bmp")]
+    [ToolboxBitmap(typeof(NetPhotoAlbum), "NetPhotoAlbum.bmp")]
     [ToolboxItem(true)]
     public partial class NetPhotoAlbum : UserControl
     {
@@ -140,8 +139,7 @@ namespace NetPhotoAlbum
             this.trackBar1 = new MACTrackBar();
             this._ControlPanel = new ControlPanel();
             this._AlbumContainer = new Panel();
-            //this._SoloPBox = new PictureBox();
-            this._SelectedDataSource = new ListObjectDataSource();
+            this._SelectedObjectDataSource = new ObjectDataSource();
             this.Btn_Left = (TriangleButton)_ControlPanel.Controls.Find("Btn_Left", true)[0];
             this.Btn_Up = (TriangleButton)_ControlPanel.Controls.Find("Btn_Up", true)[0];
             this.Btn_Right = (TriangleButton)_ControlPanel.Controls.Find("Btn_Right", true)[0];
@@ -231,37 +229,27 @@ namespace NetPhotoAlbum
             _AlbumContainer.Location = GetAlbumContainerLocation();
         }
         #endregion
-        #region Events
-        private void ListObjectClicked(object sender, EventArgs e)
+        #region Events       
+        private void OcjectClicked(object sender, EventArgs e)
         {
-            CreateSoloPboxWithProperties();
-            _SelectedObj = _ListFlow.Controls.Cast<ListObject>().FirstOrDefault(Lo => Lo.IsSelected);
-            if (_SelectedObj != null)
+            switch (this._AlbumStyle)
             {
-                _AlbumContainer.Controls.Clear();
-                _AlbumContainer.Controls.Add(_SoloPBox);
-                _SoloPBox.Image = new Bitmap(_SelectedObj.DataSource.Picture);
-                _SourceBitmap = new Bitmap(_SoloPBox.Image);
-                _OriginalSizeOfSourceImage = _SoloPBox.Image.Size;
-                _SelectedDataSource.Picture = new Bitmap(_SelectedObj.DataSource.Picture);
-                ZoomAction();
+                case AlbumStyle.Catalog:
+                    _SelectedObjectDataSource = (_ListFlow.Controls.Cast<CatalogObject>().FirstOrDefault(Lo => Lo.IsSelected)).DataSource;
+                    break;
+                case AlbumStyle.List:
+                    _SelectedObjectDataSource = (_ListFlow.Controls.Cast<ListObject>().FirstOrDefault(Lo => Lo.IsSelected)).DataSource;
+                    break;
             }
-        }
-        private void CatalogObjectClicked(object sender, EventArgs e)
-        {
             CreateSoloPboxWithProperties();
-            _SelectedCatalogObj = _ListFlow.Controls.Cast<CatalogObject>().FirstOrDefault(Lo => Lo.IsSelected);
-            if (_SelectedCatalogObj != null)
-            {
-                _AlbumContainer.Controls.Clear();
-                _AlbumContainer.Controls.Add(_SoloPBox);
-                _SoloPBox.Image = _SelectedCatalogObj.DataSource.Picture;
-                _SourceBitmap = new Bitmap(_SoloPBox.Image);
-                _OriginalSizeOfSourceImage = _SoloPBox.Image.Size;
-                _SelectedDataSource.Picture = new Bitmap(_SelectedCatalogObj.DataSource.Picture);
-                ZoomAction();
-            }
+            _AlbumContainer.Controls.Clear();
+            _AlbumContainer.Controls.Add(_SoloPBox);
+            GetSelectedObjectDataSource();
+            _OriginalSizeOfSourceImage = _SelectedObjectDataSource.Image.Size;
+            ZoomAction();
         }
+
+
 
         private void SoloPBox_Clicked(object obj, MouseEventArgs e)
         {
@@ -309,7 +297,7 @@ namespace NetPhotoAlbum
             if (!_FixedImage)
             {
                 e.Graphics.Clear(Color.White);
-                e.Graphics.DrawImage(_SourceBitmap, _MovingPoint);
+                e.Graphics.DrawImage(_SoloPBox.Image, _MovingPoint);
             }
         }
         private void SoloPBox_MouseWheel(object sender, MouseEventArgs e)
@@ -381,7 +369,19 @@ namespace NetPhotoAlbum
         }
 
         #endregion
-
+        private void GetSelectedObjectDataSource()
+        {
+            switch (_AlbumStyle)
+            {
+                case AlbumStyle.Catalog:
+                    _SelectedObjectDataSource = _ListFlow.Controls.Cast<CatalogObject>().FirstOrDefault(Lo => Lo.IsSelected).DataSource;
+                    break;
+                case AlbumStyle.List:
+                    _SelectedObjectDataSource = _ListFlow.Controls.Cast<ListObject>().FirstOrDefault(Lo => Lo.IsSelected).DataSource;
+                    break;
+            }
+            _SelectedObjectDataSource.Image = PopulateBigPicture();
+        }
 
         private void ZoomAction()
         {
@@ -390,54 +390,97 @@ namespace NetPhotoAlbum
                 _FixedImage = false;
                 _SoloPBox.Image.Dispose();
                 _SoloPBox.SizeMode = PictureBoxSizeMode.Normal;
-                _SoloPBox.Image = Zoom(_SelectedDataSource.Picture, new Size(trackBar1.Value, trackBar1.Value));
-
+                _SoloPBox.Image = Zoom(_SelectedObjectDataSource.Image, new Size(trackBar1.Value, trackBar1.Value));
             }
             else
             {
                 _FixedImage = true;
-                _SoloPBox.Image = _SourceBitmap;
+                if (_SoloPBox.Image != null)
+                    _SoloPBox.Image.Dispose();
+                _SoloPBox.Image =Zoom(_SelectedObjectDataSource.Image, new Size(trackBar1.Value, trackBar1.Value));
                 _SoloPBox.SizeMode = PictureBoxSizeMode.Zoom;
                 _MovingPoint = new Point(0, 0);
-                _OriginalSizeOfSourceImage = _SoloPBox.Image.Size;
+                //_OriginalSizeOfSourceImage = _SoloPBox.Image.Size;
             }
         }
         private void FillData()
         {
             if (_DataSource != null && _DataSource.Count > 0)
             {
+                _ListFlow.SuspendLayout();
                 _ListFlow.Controls.Clear();
                 _ListFlow.Dispose();
                 this._ListFlow = new FlowLayoutPanel();
                 this._ListFlow.Dock = DockStyle.Fill;
                 this._ListFlow.AutoScroll = true;
                 this._AlbumContainer.Controls.Add(_ListFlow);
-                foreach (ListObjectDataSource Src in _DataSource)
+                foreach (ObjectDataSource Src in _DataSource)
                 {
+                    Src.Id = _DataSource.FindIndex(q => q == Src);
+
                     switch (_AlbumStyle)
                     {
                         case AlbumStyle.List:
-                            ListObject Obj = new ListObject { DataSource = Src, Height = _ListObjectHeight, Width = _ListFlow.Width - 30 };
-                            SetListObjectProperties(Obj);
-                            _ListFlow.Controls.Add(Obj);
+                            CreateNewListObject(Src);
                             break;
+
                         case AlbumStyle.Catalog:
-                            CatalogObject CatalogObj = new CatalogObject();
-                            SetCatalogObjectProperties(CatalogObj);
-                            CatalogObj.DataSource = Src;
-                            _ListFlow.Controls.Add(CatalogObj);
+                            CreateNewCatalogObject(Src);
                             break;
                     }
                 }
+                _ListFlow.ResumeLayout();
+
             }
         }
+
+        private void CreateNewListObject(ObjectDataSource Src)
+        {
+            ListObject Obj = new ListObject { Height = _ListObjectHeight, Width = _ListFlow.Width - 30 };
+            SetListObjectProperties(Obj);
+            Obj.DataSource = Src;
+            _ListFlow.Controls.Add(Obj);
+        }
+        private void CreateNewCatalogObject(ObjectDataSource Src)
+        {
+            CatalogObject CatalogObj = new CatalogObject();
+            SetCatalogObjectProperties(CatalogObj);
+            CatalogObj.DataSource = Src;
+            _ListFlow.Controls.Add(CatalogObj);
+        }
+
+        private Image PopulateBigPicture()
+        {
+            Image result;
+            if (_SelectedObjectDataSource.Path != null)
+            {
+                if (File.Exists(_SelectedObjectDataSource.Path))
+                {
+                    result = Image.FromFile(_SelectedObjectDataSource.Path);
+                }
+                else result = Images.Resources.brokenImage;
+            }
+            else if (_SelectedObjectDataSource.Image != null)
+            {
+                result = _SelectedObjectDataSource.Image;
+            }
+            else
+            {
+                result = Images.Resources.brokenImage;
+            }
+            return result;
+        }
+
         /// <summary>
         ///  This method disposes the picture box that shows solo picture in bigger size, and turns it to back to album style.
         /// </summary>
         private void DisposeAndTurnToList()
         {
+            this._SelectedObjectDataSource.Image.Dispose();
+            this._SelectedObjectDataSource.Dispose();
+            this._SelectedObjectDataSource = new ObjectDataSource();
+            this._SoloPBox.Image.Dispose();
             this._SoloPBox.Dispose();
-            this._SourceBitmap.Dispose();
             this.trackBar1.Value = 0;
             this._AlbumContainer.Controls.Clear();
             this._AlbumContainer.Controls.Add(_ListFlow);
@@ -467,10 +510,7 @@ namespace NetPhotoAlbum
         /// Original size of image whic came from data source.
         /// </summary>
         private Size _OriginalSizeOfSourceImage;
-        /// <summary>
-        /// Source image as bimap.
-        /// </summary>
-        private Bitmap _SourceBitmap;
+
         /// <summary>
         /// Checks if image fixed.
         /// </summary>
@@ -493,9 +533,6 @@ namespace NetPhotoAlbum
                 _MovingPoint = new Point(posX, posY);
             Bitmap bmp = new Bitmap(img, Convert.ToInt32(newWidth + (newWidth * size.Width / 10)), Convert.ToInt32(newHeight + (newHeight * size.Height / 10)));
 
-
-            if (_SourceBitmap != null) _SourceBitmap.Dispose();
-            _SourceBitmap = bmp;
             return bmp;
         }
 
@@ -633,7 +670,7 @@ namespace NetPhotoAlbum
             else if (_TrackBarLocation == TrackBarLocation.Right && (_CornerLocation == CornerLocation.TopLeft || _CornerLocation == CornerLocation.BottomLeft))
             {
                 size = new Size(this.Width - (_CpW + _TrackbarMargin + _ControlsButtonMargin.Right + _ControlsButtonMargin.Left + _AlbumMargin.Left + _AlbumMargin.Right + _TbW), this.Height - (_AlbumMargin.Top + _AlbumMargin.Bottom));
-                //size = new Size(this.Width - (_CpW + _TrackbarMargin + _ControlsButtonMargin.Left + _AlbumMargin.Left + _AlbumMargin.Right), this.Height - (_AlbumMargin.Top + _AlbumMargin.Bottom));
+
             }
             else if (_TrackBarLocation == TrackBarLocation.Top && (_CornerLocation == CornerLocation.BottomLeft || _CornerLocation == CornerLocation.BottomRight))
             {
@@ -759,15 +796,7 @@ namespace NetPhotoAlbum
         {
             foreach (Control Ctr in Control.Controls)
             {
-                switch (_AlbumStyle)
-                {
-                    case AlbumStyle.List:
-                        Ctr.DoubleClick += ListObjectClicked;
-                        break;
-                    case AlbumStyle.Catalog:
-                        Ctr.DoubleClick += CatalogObjectClicked;
-                        break;
-                }
+                Ctr.DoubleClick += OcjectClicked;
                 if (Ctr.HasChildren)
                 {
                     SetClickEventForChilds(Ctr);
@@ -1465,7 +1494,7 @@ namespace NetPhotoAlbum
         /// <summary>
         /// Data source of album.
         /// </summary>
-        public List<ListObjectDataSource> DataSource
+        public List<ObjectDataSource> DataSource
         {
             get { return _DataSource; }
             set
@@ -1480,7 +1509,7 @@ namespace NetPhotoAlbum
         /// <summary>
         /// Data source of album.
         /// </summary>
-        private List<ListObjectDataSource> _DataSource;
+        private List<ObjectDataSource> _DataSource;
 
         /// <summary>
         /// Flow layout panel for listing objects.
@@ -1606,26 +1635,14 @@ namespace NetPhotoAlbum
         /// <summary>
         /// Picture box that displays the image of selected list object in big picture.
         /// </summary>
-        private PictureBox _SoloPBox;
+        private PictureBox _SoloPBox;        
 
         /// <summary>
-        /// Selected object on list. 
-        ///     <list type="bullet">
+        /// Data Source of Selected Object. 
+        /// <list type="bullet">
         ///         <item><c> Set the modifier as public if you need to access this object from out of project.</c></item>
         ///     </list>
         /// </summary>
-        private ListObject _SelectedObj;
-        /// <summary>
-        /// Selected object on catalog. 
-        ///     <list type="bullet">
-        ///         <item><c> Set the modifier as public if you need to access this object from out of project.</c></item>
-        ///     </list>
-        /// </summary>
-        private CatalogObject _SelectedCatalogObj;
-
-        /// <summary>
-        /// Data Source of Selected List Object. 
-        /// </summary>
-        private ListObjectDataSource _SelectedDataSource;
+        private ObjectDataSource _SelectedObjectDataSource;
     }
 }

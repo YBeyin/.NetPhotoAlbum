@@ -57,11 +57,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="IListObject.cs" />
+    <Compile Include="IObject.cs" />
     <Compile Include="ListObject.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ListObjectDataSource.cs" />
+    <Compile Include="ObjectDataSource.cs" />
     <Compile Include="NetPhotoAlbum.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -109,6 +109,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Catalog_x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\brokenImage.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

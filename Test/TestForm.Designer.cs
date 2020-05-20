@@ -33,7 +33,6 @@
             // 
             // netPhotoAlbum1
             // 
-            this.netPhotoAlbum1.AlbumStyle = NetPhotoAlbum.AlbumStyle.List;
             this.netPhotoAlbum1.CatalogObjBorder = System.Windows.Forms.BorderStyle.Fixed3D;
             this.netPhotoAlbum1.CatalogObjImgBackColor = System.Drawing.Color.DarkRed;
             this.netPhotoAlbum1.CatalogObjSize = new System.Drawing.Size(250, 220);

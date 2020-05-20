@@ -1,12 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace NetPhotoAlbum
 {
     internal partial class ListObject : UserControl
-    {
+    {        
         internal ListObject()
         {
             InitializeComponent();
@@ -151,7 +152,7 @@ namespace NetPhotoAlbum
         {
             this.Lbl_Info.Location = GetInfoLocation();
             base.OnSizeChanged(e);
-        }       
+        }
         private void ControlMouseEnter(object sender, EventArgs e)
         {
             this.Pnl_Image.BackColor = _ImageMarginHoverColor;
@@ -165,7 +166,50 @@ namespace NetPhotoAlbum
             this.IsSelected = false;
         }
         #endregion
+        private void PopulateData()
+        {
+            Pbox.SuspendLayout();
+            Image _Img;           
+            Size ThumbSize;
+            if (_DataSource.Path != null)
+            {
+                if (File.Exists(_DataSource.Path))
+                {                    
+                    using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(_DataSource.Path)))
+                    {
+                        _Img = Image.FromStream(ms, true, false);
+                        ThumbSize = CalculateThumbImageSize(_Img.Size, this.Pbox.Size);
+                        _Img = _Img.GetThumbnailImage(ThumbSize.Width, ThumbSize.Height, null, new IntPtr());
+                    }                    
+                }
+                else
+                {
+                    ThumbSize = CalculateThumbImageSize(Images.Resources.brokenImage.Size, this.Pbox.Size);
+                    _Img = Images.Resources.brokenImage.GetThumbnailImage(ThumbSize.Width, ThumbSize.Height, null, new IntPtr());
+                }
+            }
+            else if (_DataSource.Image != null)
+            {
+                ThumbSize = CalculateThumbImageSize(_DataSource.Image.Size, this.Pbox.Size);
+                _Img = _DataSource.Image.GetThumbnailImage(ThumbSize.Width, ThumbSize.Height, null, new IntPtr());
+            }
+            else
+            {
+                ThumbSize = CalculateThumbImageSize(Images.Resources.brokenImage.Size, this.Pbox.Size);
+                _Img = Images.Resources.brokenImage.GetThumbnailImage(ThumbSize.Width, ThumbSize.Height, null, new IntPtr());
+            }
+            this.Pbox.Image = _Img;
+            this.Lbl_Info.Text = _DataSource.Information == null ? "No info!" : _DataSource.Information;
+            Pbox.ResumeLayout();
+        }
 
+        private Size CalculateThumbImageSize(Size CurrentImageSize, Size ObjectSize)
+        {
+            Size NewSize = new Size();
+            NewSize.Width = ObjectSize.Width - 3;
+            NewSize.Height = (int)Math.Round(((float)CurrentImageSize.Height * (float)NewSize.Width) / (float)CurrentImageSize.Width);
+            return NewSize;
+        }
 
         private Point GetInfoLocation()
         {
@@ -277,17 +321,13 @@ namespace NetPhotoAlbum
             }
         }
 
-        public IListObject DataSource
+        public ObjectDataSource DataSource
         {
             get { return _DataSource; }
             set
             {
-                _DataSource = value;
-                if (_DataSource != null)
-                {
-                    this.Pbox.Image = new Bitmap(_DataSource.Picture);
-                    this.Lbl_Info.Text = _DataSource.Information;
-                }
+                _DataSource = value;               
+                PopulateData();                
                 Refresh();
             }
         }
@@ -303,10 +343,11 @@ namespace NetPhotoAlbum
         private Color _ImageMarginHoverColor;
         private Color _InfoBackHoverColor;
         private Font _InfoFont;
-        private IListObject _DataSource;
+        private ObjectDataSource _DataSource;
         private BorderStyle _PboxBorderStyle;
         private Padding _PictureBoxMargin;
-        private PictureBox Pbox;
+        internal PictureBox Pbox;
         public bool IsSelected;
+      
     }
 }

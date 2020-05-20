@@ -20,20 +20,17 @@ namespace Test
         }
         private void populate()
         {
-            List<ListObjectDataSource> Objs = new List<ListObjectDataSource>();
+            List<ObjectDataSource> Objs = new List<ObjectDataSource>();
             for (int i = 0; i < 25; i++)
             {
-                ListObjectDataSource obj = new ListObjectDataSource();
-                obj.Picture = Properties.Resources.SadCat;
+                ObjectDataSource obj = new ObjectDataSource();
+                //obj.Image = Properties.Resources.textImage5000x4000;
+                //obj.Path = //image path of Properties.Resources.SadCat.jpg;
+                //obj.Path = @"..Resources\textImage5000x4000.jpg"; // path pf the image               
                 obj.Information = "Test Picture " + i.ToString();
                 Objs.Add(obj);
             }
             netPhotoAlbum1.DataSource = Objs;
-        }
-
-        private void netPhotoAlbum1_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }
