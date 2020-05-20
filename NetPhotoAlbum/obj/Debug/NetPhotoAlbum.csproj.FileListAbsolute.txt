@@ -22,3 +22,14 @@ D:\Software_Works\New_Project\NetPhotoAlbum\Project\NetPhotoAlbum\obj\Debug\NetP
 D:\Software_Works\New_Project\NetPhotoAlbum\Project\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.csproj.CoreCompileInputs.cache
 D:\Software_Works\New_Project\NetPhotoAlbum\Project\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.dll
 D:\Software_Works\New_Project\NetPhotoAlbum\Project\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.pdb
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\bin\Debug\NetPhotoAlbum.dll
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\bin\Debug\NetPhotoAlbum.pdb
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.CatalogObject.resources
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.Images.Resources.resources
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.ListObject.resources
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.NetPhotoAlbum.resources
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.TrackBarCollection.MACTrackBar.resources
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.csproj.GenerateResource.cache
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.csproj.CoreCompileInputs.cache
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.dll
+D:\Software_Works\GitHub\Repositories\.NetPhotoAlbum\NetPhotoAlbum\obj\Debug\NetPhotoAlbum.pdb

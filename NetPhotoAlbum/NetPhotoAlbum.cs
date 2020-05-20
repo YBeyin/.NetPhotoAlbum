@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using NetPhotoAlbum.TrackBarCollection;
 
@@ -231,16 +229,7 @@ namespace NetPhotoAlbum
         #endregion
         #region Events       
         private void OcjectClicked(object sender, EventArgs e)
-        {
-            switch (this._AlbumStyle)
-            {
-                case AlbumStyle.Catalog:
-                    _SelectedObjectDataSource = (_ListFlow.Controls.Cast<CatalogObject>().FirstOrDefault(Lo => Lo.IsSelected)).DataSource;
-                    break;
-                case AlbumStyle.List:
-                    _SelectedObjectDataSource = (_ListFlow.Controls.Cast<ListObject>().FirstOrDefault(Lo => Lo.IsSelected)).DataSource;
-                    break;
-            }
+        {            
             CreateSoloPboxWithProperties();
             _AlbumContainer.Controls.Clear();
             _AlbumContainer.Controls.Add(_SoloPBox);
@@ -374,12 +363,18 @@ namespace NetPhotoAlbum
             switch (_AlbumStyle)
             {
                 case AlbumStyle.Catalog:
-                    _SelectedObjectDataSource = _ListFlow.Controls.Cast<CatalogObject>().FirstOrDefault(Lo => Lo.IsSelected).DataSource;
+                    using (var obj = _ListFlow.Controls.Cast<CatalogObject>().FirstOrDefault(Lo => Lo.IsSelected).DataSource)                    
+                    {
+                        _SelectedObjectDataSource = new ObjectDataSource { Id = obj.Id, Image = obj.Image, Information = obj.Information, Path = obj.Path };
+                    }
                     break;
                 case AlbumStyle.List:
-                    _SelectedObjectDataSource = _ListFlow.Controls.Cast<ListObject>().FirstOrDefault(Lo => Lo.IsSelected).DataSource;
+                    using (var obj = _ListFlow.Controls.Cast<ListObject>().FirstOrDefault(Lo => Lo.IsSelected).DataSource)
+                    {
+                        _SelectedObjectDataSource = new ObjectDataSource { Id = obj.Id, Image = obj.Image, Information = obj.Information, Path = obj.Path };
+                    }
                     break;
-            }
+            }            
             _SelectedObjectDataSource.Image = PopulateBigPicture();
         }
 
@@ -397,10 +392,10 @@ namespace NetPhotoAlbum
                 _FixedImage = true;
                 if (_SoloPBox.Image != null)
                     _SoloPBox.Image.Dispose();
-                _SoloPBox.Image =Zoom(_SelectedObjectDataSource.Image, new Size(trackBar1.Value, trackBar1.Value));
+                _SoloPBox.Image = Zoom(_SelectedObjectDataSource.Image, new Size(trackBar1.Value, trackBar1.Value));
                 _SoloPBox.SizeMode = PictureBoxSizeMode.Zoom;
                 _MovingPoint = new Point(0, 0);
-                //_OriginalSizeOfSourceImage = _SoloPBox.Image.Size;
+                _OriginalSizeOfSourceImage = _SoloPBox.Image.Size;
             }
         }
         private void FillData()
@@ -476,9 +471,9 @@ namespace NetPhotoAlbum
         /// </summary>
         private void DisposeAndTurnToList()
         {
+            if(_SelectedObjectDataSource.Path!=null)
             this._SelectedObjectDataSource.Image.Dispose();
             this._SelectedObjectDataSource.Dispose();
-            this._SelectedObjectDataSource = new ObjectDataSource();
             this._SoloPBox.Image.Dispose();
             this._SoloPBox.Dispose();
             this.trackBar1.Value = 0;
@@ -1635,7 +1630,7 @@ namespace NetPhotoAlbum
         /// <summary>
         /// Picture box that displays the image of selected list object in big picture.
         /// </summary>
-        private PictureBox _SoloPBox;        
+        private PictureBox _SoloPBox;
 
         /// <summary>
         /// Data Source of Selected Object. 

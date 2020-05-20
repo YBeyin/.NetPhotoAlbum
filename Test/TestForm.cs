@@ -26,7 +26,7 @@ namespace Test
                 ObjectDataSource obj = new ObjectDataSource();
                 //obj.Image = Properties.Resources.textImage5000x4000;
                 //obj.Path = //image path of Properties.Resources.SadCat.jpg;
-                //obj.Path = @"..Resources\textImage5000x4000.jpg"; // path pf the image               
+                //obj.Path = @"..Resources\textImage5000x4000.jpg"; // path of the image  
                 obj.Information = "Test Picture " + i.ToString();
                 Objs.Add(obj);
             }
